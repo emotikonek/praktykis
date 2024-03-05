@@ -8,10 +8,10 @@ if (!$conn) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['edit'])) {
         $id = $_POST['edit'];
-        // Pobieranie danych wpisu z bazy danych do formularza edycji
+        
         $edit_query = mysqli_query($conn, "SELECT * FROM kontakt WHERE id='$id'");
         $edit_row = mysqli_fetch_array($edit_query);
-        // Tworzenie formularza edycji
+        
         echo "<form method='post' action='{$_SERVER['PHP_SELF']}'>";
         echo "<input type='hidden' name='id' value='{$edit_row['id']}'>";
         echo "Imię: <input type='text' name='imie' value='{$edit_row['imie']}'><br>";
@@ -22,7 +22,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "</form>";
     } if((isset($_POST['update']))) {
         
-        // Aktualizacja danych wpisu w bazie danych
         $rowID = $_POST['id'];
         $imie = $_POST['imie'];
         $nazwisko = $_POST['nazwisko'];
