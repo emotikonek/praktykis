@@ -27,7 +27,7 @@
             table.setAttribute("border", "1");
             var headerRow = table.insertRow();
             var headers = ["Imię", "Nazwisko", "Email", "Numer telefonu", "Zdjęcie", "ID"];
-
+            console.log("funkcja renderTable");
             headers.forEach(function(header) {
                 var th = document.createElement("th");
                 th.textContent = header;
