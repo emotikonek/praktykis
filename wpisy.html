@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wpisy</title>
+    <link rel="stylesheet" href="csswpisy.css">
+</head>
+<body>
+    
+    <h1>Wpisy z bazy danych:</h1>
+    <div id="tableContainer">
+        <!-- Tabela zostanie wstawiona tutaj za pomocą JavaScript -->
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("get_data.php")
+                .then(response => response.json())
+                .then(data => renderTable(data))
+                .catch(error => console.error("Błąd pobierania danych:", error));
+        });
+
+        function renderTable(data) {
+            var tableContainer = document.getElementById("tableContainer");
+            var table = document.createElement("table");
+            table.setAttribute("border", "1");
+            var headerRow = table.insertRow();
+            var headers = ["Imię", "Nazwisko", "Email", "Numer telefonu", "Zdjęcie", "ID"];
+
+            headers.forEach(function(header) {
+                var th = document.createElement("th");
+                th.textContent = header;
+                headerRow.appendChild(th);
+            });
+
+            data.forEach(function(rowData) {
+                var row = table.insertRow();
+                Object.values(rowData).forEach(function(value) {
+                    var cell = row.insertCell();
+                    if (value.includes(".jpg") || value.includes(".png") || value.includes(".jpeg")) {
+                        var img = document.createElement("img");
+                        img.src = value;
+                        img.alt = "Zdjęcie";
+                        img.style.maxWidth = "100px";
+                        img.style.height = "auto";
+                       
+                        cell.appendChild(img);
+                    } else {
+                        cell.textContent = value;
+                    }
+                });
+            });
+
+            tableContainer.appendChild(table);
+        }
+    </script>
+</body>
+</html>
