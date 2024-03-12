@@ -56,7 +56,7 @@
                 var actionsCell = row.insertCell();
                 var editButton = document.createElement("button");
                 editButton.textContent = "Edytuj";
-                editButton.classList.add("action-button"); // Dodanie klasy stylu
+                editButton.classList.add("action-button"); 
                 editButton.addEventListener("click", function() {
                     window.location.href = `edit.php?id=${rowData.ID}`;
                 });
@@ -65,7 +65,7 @@
 
             tableContainer.appendChild(table);
 
-            // Ustawienie kolorów tła komórek po wczytaniu tabeli
+         
             setColorForCells(document.getElementById("rgbInput").value);
         }
 
@@ -84,7 +84,7 @@
             return `rgb(${r}, ${g}, ${b})`;
         }
         
-        // Odświeżanie kolorów tła tabeli po zmianie wartości w polu RGB
+       
         document.getElementById("rgbInput").addEventListener("input", function() {
             setColorForCells(this.value);
         });
