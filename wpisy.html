@@ -12,7 +12,10 @@
     <div id="tableContainer">
         <!-- Tabela zostanie wstawiona tutaj za pomocą JavaScript -->
     </div>
-
+    
+    <label for="rgbInput">Podaj liczbę:</label>
+    <input type="number" id="rgbInput" min="0" max="255">
+    
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             fetch("get_data.php")
@@ -27,16 +30,15 @@
             table.setAttribute("border", "1");
             var headerRow = table.insertRow();
             var headers = ["Imię", "Nazwisko", "Email", "Numer telefonu", "Zdjęcie", "ID"];
-            console.log("funkcja renderTable");
             headers.forEach(function(header) {
                 var th = document.createElement("th");
                 th.textContent = header;
                 headerRow.appendChild(th);
             });
 
-            data.forEach(function(rowData) {
+            data.forEach(function(rowData, index) {
                 var row = table.insertRow();
-                Object.values(rowData).forEach(function(value) {
+                Object.values(rowData).forEach(function(value, colIndex) {
                     var cell = row.insertCell();
                     if (value.includes(".jpg") || value.includes(".png") || value.includes(".jpeg")) {
                         var img = document.createElement("img");
@@ -44,16 +46,39 @@
                         img.alt = "Zdjęcie";
                         img.style.maxWidth = "100px";
                         img.style.height = "auto";
-                       
                         cell.appendChild(img);
                     } else {
                         cell.textContent = value;
                     }
                 });
+
+                if (index % 2 === 0 && document.getElementById("rgbInput").value !== "") { 
+                    row.style.backgroundColor = generateColor(document.getElementById("rgbInput").value);
+                }
             });
 
             tableContainer.appendChild(table);
         }
+
+        function generateColor(num) {
+            num = Math.ceil(num); 
+            var r = num;
+            var g = Math.ceil(num * 0.5);
+            var b = Math.ceil(num * 0.75);
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+        
+        // Odświeżanie kolorów tła tabeli po zmianie wartości w polu RGB
+        document.getElementById("rgbInput").addEventListener("input", function() {
+            var rows = document.querySelectorAll("table tr");
+            rows.forEach(function(row, index) {
+                if (index % 2 === 0 && document.getElementById("rgbInput").value !== "") {
+                    row.style.backgroundColor = generateColor(document.getElementById("rgbInput").value);
+                } else {
+                    row.style.backgroundColor = ""; // Usunięcie koloru tła, jeśli pole RGB jest puste
+                }
+            });
+        });
     </script>
 </body>
 </html>
