@@ -29,7 +29,7 @@
             var table = document.createElement("table");
             table.setAttribute("border", "1");
             var headerRow = table.insertRow();
-            var headers = ["Imię", "Nazwisko", "Email", "Numer telefonu", "Zdjęcie", "ID"];
+            var headers = ["Imię", "Nazwisko", "Email", "Numer telefonu", "Zdjęcie", "ID", "Edytuj wpis"];
             headers.forEach(function(header) {
                 var th = document.createElement("th");
                 th.textContent = header;
@@ -50,18 +50,34 @@
                     } else {
                         cell.textContent = value;
                     }
-                    // Ustawianie koloru tła co drugiej komórki w tabeli
-                    if (colIndex % 2 !== 0) {
-                        cell.style.backgroundColor = generateColor(document.getElementById("rgbInput").value);
-                    }
                 });
+
+                
+                var actionsCell = row.insertCell();
+                var editButton = document.createElement("button");
+                editButton.textContent = "Edytuj";
+                editButton.classList.add("action-button"); // Dodanie klasy stylu
+                editButton.addEventListener("click", function() {
+                    window.location.href = `edit.php?id=${rowData.ID}`;
+                });
+                actionsCell.appendChild(editButton);
             });
 
             tableContainer.appendChild(table);
+
+            // Ustawienie kolorów tła komórek po wczytaniu tabeli
+            setColorForCells(document.getElementById("rgbInput").value);
+        }
+
+        function setColorForCells(num) {
+            num = Math.ceil(num); // Zaokrąglamy liczbę w górę
+            var cells = document.querySelectorAll("table td:nth-child(odd)");
+            cells.forEach(function(cell) {
+                cell.style.backgroundColor = generateColor(num);
+            });
         }
 
         function generateColor(num) {
-            num = Math.ceil(num); // Zaokrąglamy liczbę w górę
             var r = num;
             var g = Math.ceil(num * 0.5);
             var b = Math.ceil(num * 0.75);
@@ -70,12 +86,7 @@
         
         // Odświeżanie kolorów tła tabeli po zmianie wartości w polu RGB
         document.getElementById("rgbInput").addEventListener("input", function() {
-            var cells = document.querySelectorAll("table td");
-            cells.forEach(function(cell, index) {
-                if (index % 2 !== 0) {
-                    cell.style.backgroundColor = generateColor(document.getElementById("rgbInput").value);
-                }
-            });
+            setColorForCells(this.value);
         });
     </script>
 </body>
