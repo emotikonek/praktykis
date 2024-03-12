@@ -36,7 +36,7 @@
                 headerRow.appendChild(th);
             });
 
-            data.forEach(function(rowData, index) {
+            data.forEach(function(rowData) {
                 var row = table.insertRow();
                 Object.values(rowData).forEach(function(value, colIndex) {
                     var cell = row.insertCell();
@@ -50,18 +50,18 @@
                     } else {
                         cell.textContent = value;
                     }
+                    // Ustawianie koloru tła co drugiej komórki w tabeli
+                    if (colIndex % 2 !== 0) {
+                        cell.style.backgroundColor = generateColor(document.getElementById("rgbInput").value);
+                    }
                 });
-
-                if (index % 2 === 0 && document.getElementById("rgbInput").value !== "") { 
-                    row.style.backgroundColor = generateColor(document.getElementById("rgbInput").value);
-                }
             });
 
             tableContainer.appendChild(table);
         }
 
         function generateColor(num) {
-            num = Math.ceil(num); 
+            num = Math.ceil(num); // Zaokrąglamy liczbę w górę
             var r = num;
             var g = Math.ceil(num * 0.5);
             var b = Math.ceil(num * 0.75);
@@ -70,12 +70,10 @@
         
         // Odświeżanie kolorów tła tabeli po zmianie wartości w polu RGB
         document.getElementById("rgbInput").addEventListener("input", function() {
-            var rows = document.querySelectorAll("table tr");
-            rows.forEach(function(row, index) {
-                if (index % 2 === 0 && document.getElementById("rgbInput").value !== "") {
-                    row.style.backgroundColor = generateColor(document.getElementById("rgbInput").value);
-                } else {
-                    row.style.backgroundColor = ""; // Usunięcie koloru tła, jeśli pole RGB jest puste
+            var cells = document.querySelectorAll("table td");
+            cells.forEach(function(cell, index) {
+                if (index % 2 !== 0) {
+                    cell.style.backgroundColor = generateColor(document.getElementById("rgbInput").value);
                 }
             });
         });
