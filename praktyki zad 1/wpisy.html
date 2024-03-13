@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wpisy</title>
+    <link rel="stylesheet" href="csswpisy.css">
+</head>
+<body>
+    
+    <h1>Wpisy z bazy danych:</h1>
+    <div id="tableContainer">
+        <!-- Tabela zostanie wstawiona tutaj za pomocą JavaScript -->
+    </div>
+    
+    <label for="rgbInput">Podaj liczbę:</label>
+    <input type="number" id="rgbInput" min="0" max="255">
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("get_data.php")
+                .then(response => response.json())
+                .then(data => renderTable(data))
+                .catch(error => console.error("Błąd pobierania danych:", error));
+        });
+
+        function renderTable(data) {
+            var tableContainer = document.getElementById("tableContainer");
+            var table = document.createElement("table");
+            table.setAttribute("border", "1");
+            var headerRow = table.insertRow();
+            var headers = ["Imię", "Nazwisko", "Email", "Numer telefonu", "Zdjęcie", "ID", "Edytuj wpis"];
+            headers.forEach(function(header) {
+                var th = document.createElement("th");
+                th.textContent = header;
+                headerRow.appendChild(th);
+            });
+
+            data.forEach(function(rowData) {
+                var row = table.insertRow();
+                Object.values(rowData).forEach(function(value, colIndex) {
+                    var cell = row.insertCell();
+                    if (value.includes(".jpg") || value.includes(".png") || value.includes(".jpeg")) {
+                        var img = document.createElement("img");
+                        img.src = value;
+                        img.alt = "Zdjęcie";
+                        img.style.maxWidth = "100px";
+                        img.style.height = "auto";
+                        cell.appendChild(img);
+                    } else {
+                        cell.textContent = value;
+                    }
+                });
+
+                
+                var actionsCell = row.insertCell();
+                var editButton = document.createElement("button");
+                editButton.textContent = "Edytuj";
+                editButton.classList.add("action-button"); 
+                editButton.addEventListener("click", function() {
+                    window.location.href = `edit.php?id=${rowData.ID}`;
+                });
+                actionsCell.appendChild(editButton);
+            });
+
+            tableContainer.appendChild(table);
+
+         
+            setColorForCells(document.getElementById("rgbInput").value);
+        }
+
+        function setColorForCells(num) {
+            num = Math.ceil(num); // Zaokrąglamy liczbę w górę
+            var cells = document.querySelectorAll("table td:nth-child(odd)");
+            cells.forEach(function(cell) {
+                cell.style.backgroundColor = generateColor(num);
+            });
+        }
+
+        function generateColor(num) {
+            var r = num;
+            var g = Math.ceil(num * 0.5);
+            var b = Math.ceil(num * 0.75);
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+        
+       
+        document.getElementById("rgbInput").addEventListener("input", function() {
+            setColorForCells(this.value);
+        });
+    </script>
+</body>
+</html>
